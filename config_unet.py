@@ -7,7 +7,7 @@ config = dict()
 
 config['dataset'] = {}
 config['dataset']['source_root'] = 'data_raw'
-config['dataset']['target_root'] = 'data'
+config['dataset']['target_root'] = '../'
 config['dataset']['reduce'] = True
 config['dataset']['return_features'] = False
 config['dataset']['cities'] = ['Berlin']  # has to be iterable

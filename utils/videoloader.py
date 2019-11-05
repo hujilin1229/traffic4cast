@@ -252,7 +252,8 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
             
             target_file_path = self.target_file_paths[file_ix]
             city_name_path = Path(target_file_path.replace(self.target_root,''))
-            city_name = city_name_path.parts[1]
+            # print(city_name_path)
+            city_name = city_name_path.parts[-3]
             
             tstamp_ix =  self.valid_test_times[city_name][valid_tstamp_ix]
 
@@ -290,12 +291,8 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
 
         if self.return_city:
             city_name_path = Path(target_file_path.replace(self.target_root,''))
-            city_name = city_name_path.parts[1]
+            city_name = city_name_path.parts[-3]
             return_dict['city_names'] = city_name
-
-
-        
-       
 
         # we want to predict the image at idx+1 based on the image with idx
         f = h5py.File(target_file_path, 'r')

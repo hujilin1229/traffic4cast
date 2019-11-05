@@ -12,11 +12,11 @@ class Visualizer():
     def write_lr(self, optim, globaliter):
         for i, param_group in enumerate(optim.param_groups):
             self.summary_writer.add_scalar('learning_rate/lr_' + str(i), param_group['lr'], globaliter)
-        self.summary_writer.flush()
+        # self.summary_writer.flush()
 
     def write_loss_train(self, value, globaliter):
         self.summary_writer.add_scalar('Loss/train', value, globaliter)
-        self.summary_writer.flush()
+        # self.summary_writer.flush()
 
     def write_loss_validation(self, value, globaliter, if_testtimes=False):
         if if_testtimes:
@@ -25,7 +25,7 @@ class Visualizer():
             postfix = ''
 
         self.summary_writer.add_scalar('Loss/validation' + postfix, value, globaliter)
-        self.summary_writer.flush()
+        # self.summary_writer.flush()
 
     def write_image(self, images, epoch, if_predict=False, if_testtimes=False):
 
@@ -92,7 +92,7 @@ class Visualizer():
             head_batch = torchvision.utils.make_grid(head_batch, normalize=True, range=(0, 1))
             self.summary_writer.add_image('ground_truth' + postfix + '/heading', head_batch, epoch)
 
-        self.summary_writer.flush()
+        # self.summary_writer.flush()
 
     def close(self):
         self.summary_writer.close()

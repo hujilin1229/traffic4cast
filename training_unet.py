@@ -92,6 +92,9 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter):
     start_time = time.time()
 
     for i, data in enumerate(train_loader, 0):
+        # Test Validation
+        # if i > 2:
+        #     break
         inputs, Y, feature_dict = data
         inputs = inputs / 255
         globaliter = globaliter + 1
