@@ -125,7 +125,7 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter):
         if (i + 1) % config['print_every_step'] == 0:
             print("Epoch {}, {:d}% \t train_loss: {:.3f} took: {:.2f}s".format(
                 epoch + 1, int(100 * (i + 1) / n_batches), running_loss / config['print_every_step'],
-                time.time() - start_time))
+                time.time() - start_time), flush=True)
 
             # write the train loss to tensorboard
             running_loss_norm = running_loss / config['print_every_step']
@@ -177,7 +177,7 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False):
                 break
 
     val_loss = total_val_loss / len(val_loader)
-    print("Validation loss {} = {:.2f}".format(prefix, val_loss))
+    print("Validation loss {} = {:.2f}".format(prefix, val_loss), flush=True)
 
     # write the validation loss to tensorboard
     writer.write_loss_validation(val_loss, globaliter, if_testtimes=if_testtimes)
