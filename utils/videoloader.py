@@ -303,12 +303,11 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
 
         if self.reduce:
             # stack all time dimensions into the channels.
-            # all channels of the same timestamp are left togehter
+            # all channels of the same timestamp are left together
             x = np.moveaxis(x, (0, 1), (2, 3))
             x = np.reshape(x, (495, 436, 36))
             x = torch.from_numpy(x)
             x = x.permute(2, 0, 1)  # Dimensions: time/channels, h, w
-
 
             y = np.moveaxis(y, (0, 1), (2, 3))
             y = np.reshape(y, (495, 436, 9))
