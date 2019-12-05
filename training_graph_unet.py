@@ -17,17 +17,6 @@ with warnings.catch_warnings():  # pytorch tensorboard throws future warnings un
     warnings.filterwarnings("ignore", category=FutureWarning)
     from utils.visual_TB import Visualizer
 
-def count_parameters(model):
-    total_param = 0
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            num_param = np.prod(param.size())
-            if param.dim() > 1:
-                print(name, ':', 'x'.join(str(x) for x in list(param.size())), '=', num_param)
-            else:
-                print(name, ':', num_param)
-            total_param += num_param
-    return total_param
 
 def trainNet(model, train_loader, val_loader, val_loader_ttimes, device, node_pos=None):
     # Print all of the hyper parameters of the training iteration:
@@ -307,11 +296,11 @@ if __name__ == "__main__":
             # We overwrite this to be able to configure the optimizer on subsequent runs.
             config['model'] = model_config['model']
         model = UNet(**config['model']).to(device)
+        print("Number of Model Parameters: ", count_parameters(model))
         model.load_state_dict(torch.load(os.path.join(cont_model_path, 'checkpoint.pt'),
                                          map_location=device))
     else:
         raise Exception(f"Model to continue training not found: {config['cont_model_path']}.")
 
-    print("Number of Model Parameters: ", count_parameters(model))
     # # need to add the mask parameter when training the partial Unet model
     trainNet(model, train_loader, val_loader, val_loader_ttimes, device, node_pos=node_pos)

@@ -207,7 +207,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
             for tstamp_ix in range(288-self.num_frames):
                 clip = data1[tstamp_ix:tstamp_ix+self.num_frames, :, :, :]
                 sum_first_train_frame = np.sum(clip[0, :, :, :])
-                sum_last_train_frame = np.sum(clip[11, :, :, :])
+                sum_last_train_frame = np.sum(clip[self.num_frames - 4, :, :, :])
 
                 if (sum_first_train_frame != 0) and (sum_last_train_frame != 0):
                     valid_test_clips.append((source_path, tstamp_ix))
@@ -346,10 +346,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
         if self.subsample:
             x = subsample(x,self.n,self.m)
             y = subsample(y,self.n,self.m)
-        
-      
-        
-        
+
         if self.transform is not None:
             x =  self.transform(x)
 
