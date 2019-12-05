@@ -102,6 +102,20 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter, node_po
         # if i > 2:
         #     break
         inputs, Y, feature_dict = data
+
+        # test Y channels
+        # Y_C = Y.permute(0, 2, 3, 1)
+        # print("YC shape is ", Y_C.shape)
+        # Y_C = torch.reshape(Y_C, (-1, 495, 436, 3, 3))
+        # print(Y_C.shape)
+        #
+        # # move axis to unstack in the right order
+        # data_temp = np.moveaxis(Y.numpy(), 1, 3)
+        # # unstack and move axis back
+        # data_temp = np.reshape(data_temp, (-1, 495, 436, 3, 3))
+        # submission_data = np.moveaxis(data_temp, 3, 1)
+        # print("Direction Channel: ", np.unique(submission_data[:, :, :, :, 2]))
+
         inputs = inputs / 255
         globaliter = globaliter + 1
 
@@ -131,9 +145,11 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter, node_po
         optim.step()
 
         batch_size = prediction.shape[0]
+        # print("prediction shape is ", prediction.shape)
         # reshape prediction to required shape
         prediction_time_channel = torch.reshape(prediction[:, :, 1:, 6:-6], (-1, 3, 3, 495, 436)) # (BZ, steps, channels, 495, 436)
         Y_time_channel = torch.reshape(Y, (-1, 3, 3, 495, 436))
+        # print("Y GT Direction Unique: ", torch.unique(Y_time_channel[:, :, 2, :, :]))
         running_loss_volume += torch.nn.functional.mse_loss(prediction_time_channel[:, :, 0, node_pos[:, 0], node_pos[:, 1]],
                                                             Y_time_channel[:, :, 0, node_pos[:, 0], node_pos[:, 1]]).item() / 255**2
         running_loss_speed += torch.nn.functional.mse_loss(prediction_time_channel[:, :, 1, node_pos[:, 0], node_pos[:, 1]],

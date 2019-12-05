@@ -147,10 +147,11 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
             if not os.path.exists(target_dir):
                 os.makedirs(target_dir)
 
-        with Pool() as pool:
-            pool.map(self.precompute_clip, self.do_precomp_path)
-            pool.close()
-            pool.join()
+        # print("Do Precomputing clip...")
+        # with Pool() as pool:
+        #     pool.map(self.precompute_clip, self.do_precomp_path)
+        #     pool.close()
+        #     pool.join()
 
         target_file_paths = []
         for city in cities:
@@ -189,6 +190,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
         f_source = h5py.File(source_path, 'r')
         data1 = f_source['array']
         data1 = data1[:]
+        # print("Data shape is ", data1.shape)
 
         if mode == 'writing':
 
@@ -296,6 +298,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
 
         # we want to predict the image at idx+1 based on the image with idx
         f = h5py.File(target_file_path, 'r')
+        # print(target_file_path)
         sample = f.get('array')
         
         x = sample[tstamp_ix:tstamp_ix+12, :, :, :]
@@ -304,17 +307,31 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
         if self.reduce:
             # stack all time dimensions into the channels.
             # all channels of the same timestamp are left together
-            x = np.moveaxis(x, (0, 1), (2, 3))
+            # x = np.moveaxis(x, (0, 1), (2, 3))
+            # x = np.reshape(x, (495, 436, 36))
+            # x = torch.from_numpy(x)
+            # x = x.permute(2, 0, 1)  # Dimensions: time/channels, h, w
+            #
+            # print("y shape is ", y.shape)
+            # y = np.moveaxis(y, (0, 1), (2, 3))
+            # print("after moveaxis shape of y: ", y.shape)
+            # print("y direction unique is ", np.unique(y[..., 2]))
+            #
+            # y = np.reshape(y, (495, 436, 9))
+            #
+            # y = torch.from_numpy(y)
+            # y = y.permute(2, 0, 1)
+
+            x = np.moveaxis(x, 0, 2)
             x = np.reshape(x, (495, 436, 36))
             x = torch.from_numpy(x)
             x = x.permute(2, 0, 1)  # Dimensions: time/channels, h, w
 
-            y = np.moveaxis(y, (0, 1), (2, 3))
+            y = np.moveaxis(y, 0, 2)
             y = np.reshape(y, (495, 436, 9))
-
             y = torch.from_numpy(y)
-            y = y.permute(2, 0, 1)
-            
+            y = y.permute(2, 0, 1)  # Dimensions: time/channels, h, w
+
             y = y.to(dtype=torch.float)  # is ByteTensor?
             x = x.to(dtype=torch.float)  # is ByteTensor?
 
