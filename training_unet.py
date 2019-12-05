@@ -144,17 +144,17 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter, node_po
         # Print statistics
         running_loss += loss_size.item()
         if (i + 1) % config['print_every_step'] == 0:
-            print("Epoch {}, {:d}% \t train_loss: {:.3f} took: {:.2f}s".format(
+            print("Epoch {}, {:d}% \t train_loss: {:.4f} took: {:.2f}s".format(
                 epoch + 1, int(100 * (i + 1) / n_batches), running_loss / config['print_every_step'],
                 time.time() - start_time), flush=True)
 
-            print("Epoch {}, {:d}% \t volume_loss: {:.3f} took: {:.2f}s".format(
+            print("Epoch {}, {:d}% \t volume_loss: {:.4f} took: {:.2f}s".format(
                 epoch + 1, int(100 * (i + 1) / n_batches), running_loss_volume / config['print_every_step'],
                 time.time() - start_time), flush=True)
-            print("Epoch {}, {:d}% \t speed_loss: {:.3f} took: {:.2f}s".format(
+            print("Epoch {}, {:d}% \t speed_loss: {:.4f} took: {:.2f}s".format(
                 epoch + 1, int(100 * (i + 1) / n_batches), running_loss_speed / config['print_every_step'],
                 time.time() - start_time), flush=True)
-            print("Epoch {}, {:d}% \t direction_loss: {:.3f} took: {:.2f}s".format(
+            print("Epoch {}, {:d}% \t direction_loss: {:.4f} took: {:.2f}s".format(
                 epoch + 1, int(100 * (i + 1) / n_batches), running_loss_direction / config['print_every_step'],
                 time.time() - start_time), flush=True)
 
@@ -163,6 +163,10 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter, node_po
             writer.write_loss_train(running_loss_norm, globaliter)
             # Reset running loss and time
             running_loss = 0.0
+            running_loss_volume = 0.0
+            running_loss_speed = 0.0
+            running_loss_direction = 0.0
+
             start_time = time.time()
 
         if config['debug'] and i >= 0:
@@ -229,11 +233,11 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
 
     # different dimension
     val_loss = total_val_loss_volume / len(val_loader)
-    print("Validation volume loss {} = {:.2f}".format(prefix, val_loss), flush=True)
+    print("Validation volume loss {} = {:.4f}".format(prefix, val_loss), flush=True)
     val_loss = total_val_loss_speed / len(val_loader)
-    print("Validation speed loss {} = {:.2f}".format(prefix, val_loss), flush=True)
+    print("Validation speed loss {} = {:.4f}".format(prefix, val_loss), flush=True)
     val_loss = total_val_loss_direction / len(val_loader)
-    print("Validation direction loss {} = {:.2f}".format(prefix, val_loss), flush=True)
+    print("Validation direction loss {} = {:.4f}".format(prefix, val_loss), flush=True)
 
     # write the validation loss to tensorboard
     writer.write_loss_validation(val_loss, globaliter, if_testtimes=if_testtimes)
