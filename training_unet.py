@@ -264,9 +264,12 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
 
 if __name__ == "__main__":
 
-    dataset_train = trafic4cast_dataset(split_type='training', **config['dataset'])
-    dataset_val = trafic4cast_dataset(split_type='validation', **config['dataset'])
-    dataset_val_ttimes = trafic4cast_dataset(split_type='validation', **config['dataset'], filter_test_times=True)
+    num_frames = 9 # historical records + predictions
+    config['model']['in_channels'] = int((num_frames - 3) * 3)  # 12*3
+    config['model']['n_classes'] = int(3*3)  # 3*3
+    dataset_train = trafic4cast_dataset(split_type='training', num_frames=num_frames, **config['dataset'])
+    dataset_val = trafic4cast_dataset(split_type='validation', num_frames=num_frames, **config['dataset'])
+    dataset_val_ttimes = trafic4cast_dataset(split_type='validation', num_frames=num_frames, **config['dataset'], filter_test_times=True)
 
     train_loader = torch.utils.data.DataLoader(dataset_train, **config['dataloader'])
     val_loader = torch.utils.data.DataLoader(dataset_val, **config['dataloader'])

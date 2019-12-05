@@ -204,7 +204,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
         if mode == 'reading_test':
             valid_test_clips = list = []
 
-            for tstamp_ix in range(288-15):
+            for tstamp_ix in range(288-self.num_frames):
                 clip = data1[tstamp_ix:tstamp_ix+self.num_frames, :, :, :]
                 sum_first_train_frame = np.sum(clip[0, :, :, :])
                 sum_last_train_frame = np.sum(clip[11, :, :, :])
@@ -226,7 +226,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
             return len(self.target_file_paths) * 5
 
         else:
-            return len(self.target_file_paths) * 272
+            return len(self.target_file_paths) * (288-self.num_frames - 1)
         
 
     def __getitem__(self, idx):
@@ -258,8 +258,8 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
             tstamp_ix =  self.valid_test_times[city_name][valid_tstamp_ix]
 
         else:
-            file_ix = idx // 272
-            tstamp_ix = idx % 272
+            file_ix = idx // (288-self.num_frames - 1)
+            tstamp_ix = idx % (288-self.num_frames - 1)
             target_file_path = self.target_file_paths[file_ix]
         
         if self.return_features:
@@ -299,8 +299,8 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
         # print(target_file_path)
         sample = f.get('array')
         
-        x = sample[tstamp_ix:tstamp_ix+12, :, :, :]
-        y = sample[tstamp_ix+12:tstamp_ix+15, :, :, :]
+        x = sample[tstamp_ix:tstamp_ix+(self.num_frames - 3), :, :, :]
+        y = sample[tstamp_ix+(self.num_frames - 3):tstamp_ix+self.num_frames, :, :, :]
 
         if self.reduce:
             # stack all time dimensions into the channels.
@@ -321,7 +321,7 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
             # y = y.permute(2, 0, 1)
 
             x = np.moveaxis(x, 0, 2)
-            x = np.reshape(x, (495, 436, 36))
+            x = np.reshape(x, (495, 436, -1))
             x = torch.from_numpy(x)
             x = x.permute(2, 0, 1)  # Dimensions: time/channels, h, w
 
