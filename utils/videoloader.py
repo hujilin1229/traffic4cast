@@ -148,10 +148,10 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
                 os.makedirs(target_dir)
 
         # print("Do Precomputing clip...")
-        # with Pool() as pool:
-        #     pool.map(self.precompute_clip, self.do_precomp_path)
-        #     pool.close()
-        #     pool.join()
+        with Pool() as pool:
+            pool.map(self.precompute_clip, self.do_precomp_path)
+            pool.close()
+            pool.join()
 
         target_file_paths = []
         for city in cities:
@@ -193,14 +193,12 @@ class trafic4cast_dataset(torch.utils.data.Dataset):
         # print("Data shape is ", data1.shape)
 
         if mode == 'writing':
-
             data1 = np.moveaxis(data1, 3, 1)
             f_target = h5py.File(target_path, 'w')
             dset = f_target.create_dataset('array', (288, 3, 495, 436),
                                            chunks=(1, 3, 495, 436),
                                            dtype='uint8', data=data1,
                                            compression=self.compression)
-
             f_target.close()
 
         if mode == 'reading_test':

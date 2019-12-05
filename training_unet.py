@@ -244,8 +244,7 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
             if config['debug'] and i >= 0:
                 break
 
-    val_loss = total_val_loss / len(val_loader)
-    print("Validation loss {} = {:.2f}".format(prefix, val_loss), flush=True)
+
 
     # different dimension
     val_loss = total_val_loss_volume / len(val_loader)
@@ -254,6 +253,9 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
     print("Validation speed loss {} = {:.4f}".format(prefix, val_loss), flush=True)
     val_loss = total_val_loss_direction / len(val_loader)
     print("Validation direction loss {} = {:.4f}".format(prefix, val_loss), flush=True)
+
+    val_loss = total_val_loss / len(val_loader)
+    print("Validation loss {} = {:.2f}".format(prefix, val_loss), flush=True)
 
     # write the validation loss to tensorboard
     writer.write_loss_validation(val_loss, globaliter, if_testtimes=if_testtimes)
