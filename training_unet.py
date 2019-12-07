@@ -112,7 +112,7 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter, node_po
         # Test Validation
         # if i > 2:
         #     break
-        inputs, Y, feature_dict = data
+        inputs_origin, Y_origin, feature_dict = data
 
         # test Y channels
         # Y_C = Y.permute(0, 2, 3, 1)
@@ -127,7 +127,14 @@ def train(model, train_loader, optim, device, writer, epoch, globaliter, node_po
         # submission_data = np.moveaxis(data_temp, 3, 1)
         # print("Direction Channel: ", np.unique(submission_data[:, :, :, :, 2]))
 
+        inputs = torch.zeros_like(inputs_origin)
+        Y = torch.zeros_like(Y_origin)
+        inputs[:, :, node_pos[:, 0], node_pos[:, 1]] = inputs_origin[:, :, node_pos[:, 0], node_pos[:, 1]]
+        Y[:, :, node_pos[:, 0], node_pos[:, 1]] = Y_origin[:, :, node_pos[:, 0], node_pos[:, 1]]
+
         inputs = inputs / 255
+
+
         globaliter = globaliter + 1
 
         # padd the input data with 0 to ensure same size after upscaling by the network
@@ -216,7 +223,13 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
     model.eval()
     with torch.no_grad():
         for i, data in enumerate(val_loader, 0):
-            val_inputs, val_y, feature_dict = data
+            val_inputs_origin, val_y_origin, feature_dict = data
+
+            val_inputs = torch.zeros_like(val_inputs_origin)
+            val_y = torch.zeros_like(val_y_origin)
+            val_inputs[:, :, node_pos[:, 0], node_pos[:, 1]] = val_inputs_origin[:, :, node_pos[:, 0], node_pos[:, 1]]
+            val_y[:, :, node_pos[:, 0], node_pos[:, 1]] = val_y_origin[:, :, node_pos[:, 0], node_pos[:, 1]]
+
             val_inputs = val_inputs / 255
 
             padd = torch.nn.ZeroPad2d((6, 6, 1, 0))
