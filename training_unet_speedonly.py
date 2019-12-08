@@ -267,8 +267,8 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
             # total_val_loss += val_loss_size.item() / 255**2
 
             total_val_loss += torch.nn.functional.mse_loss(
-                val_output[:, :, 1, node_pos[:, 0], node_pos[:, 1]],
-                val_y[:, :, 1, node_pos[:, 0], node_pos[:, 1]]).item() / 255**2
+                val_output[:, :, node_pos[:, 0], node_pos[:, 1]],
+                val_y[:, :, node_pos[:, 0], node_pos[:, 1]]).item() / 255**2
 
             # # reshape prediction to required shape
             # batch_size = val_output.shape[0]
