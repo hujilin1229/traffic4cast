@@ -285,11 +285,11 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
             #     Y_time_channel[:, :, 2, node_pos[:, 0], node_pos[:, 1]]).item() / 255**2
 
             # each epoch select one prediction set (one batch) to visualize
-            if (i + 1) % int(len(val_loader) / 2 + 1) == 0:
-                writer.write_image(val_output.cpu(), globaliter, if_predict=True,
-                                   if_testtimes=if_testtimes)
-                writer.write_image(val_y.cpu(), globaliter, if_predict=False,
-                                   if_testtimes=if_testtimes)
+            # if (i + 1) % int(len(val_loader) / 2 + 1) == 0:
+            #     writer.write_image(val_output.cpu(), globaliter, if_predict=True,
+            #                        if_testtimes=if_testtimes)
+            #     writer.write_image(val_y.cpu(), globaliter, if_predict=False,
+            #                        if_testtimes=if_testtimes)
 
             if config['debug'] and i >= 0:
                 break

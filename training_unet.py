@@ -268,8 +268,6 @@ def validate(model, val_loader, device, writer, globaliter, if_testtimes=False, 
             if config['debug'] and i >= 0:
                 break
 
-
-
     # different dimension
     val_loss = total_val_loss_volume / len(val_loader)
     print("Validation volume loss {} = {:.4f}".format(prefix, val_loss), flush=True)
